@@ -1,0 +1,7 @@
+{
+    "comment": "DHCPを考慮して、macアドレスからIPを取得する",
+    "server_mac_addr": "00:15:5d:50:6f:06",
+    "port": 54321,
+    "camera": 0,
+    "capacity": 10
+}

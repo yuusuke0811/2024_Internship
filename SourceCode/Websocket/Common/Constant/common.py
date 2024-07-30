@@ -1,0 +1,2 @@
+MAX_DIVISION_NUMBER = 10000
+'''最大分割文字数'''

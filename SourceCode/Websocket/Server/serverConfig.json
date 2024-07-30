@@ -1,0 +1,12 @@
+{
+    "websocket": {
+        "interface": "eth0",
+        "port": 54321
+    },
+    "database": {
+        "host": "localhost",
+        "port": 27017,
+        "username": "root",
+        "password": "password"
+    }
+}
