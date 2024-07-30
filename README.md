@@ -6,7 +6,7 @@
 
     Dockerに関する設定やymlファイルを格納
 
-    *  mongoDB  
+    * mongoDB  
         mongoDBの環境構築に関する
 
 ### Documents ###
