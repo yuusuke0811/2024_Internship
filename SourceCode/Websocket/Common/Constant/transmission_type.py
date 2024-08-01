@@ -1,14 +1,20 @@
 CONECT = 0x00 
 ''' 伝送種別: 接続 '''
+
 STREAMING = 0x01
 ''' 伝送種別: ストリーミング '''
-VERIFICATION = 0x02
-''' 伝送種別： 検証 '''
-CAMERA_INFO = 0x10
-''' 伝送種別: カメラ情報 '''
-CHANGE_MODEL = 0x11
-''' 伝送種別: モデル変更 '''
-CHANGE_CAMERA = 0x12
-''' 伝送種別: カメラ変更 '''
-DISCONECT = 0xFF
-''' 伝送種別: 切断 '''
+
+CAMERA_CONNECTION_INFO = 0x10
+''' 伝送種別: カメラ接続情報要求 '''
+
+CAMERA_REGISTRATION_INFO = 0x11
+''' 伝送種別: カメラ登録情報要求 '''
+
+CAMERA_REGISTERATION = 0x20
+''' 伝送種別: カメラ登録要求 '''
+
+CHANGE_CAMERA_SETTINGS = 0x21
+''' 伝送種別: カメラ設定変更要求 '''
+
+CAMERA_DELETE = 0x25
+''' 伝送種別: カメラ削除要求 '''

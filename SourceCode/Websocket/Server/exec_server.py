@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from server import Server
+from websocket_server_transmission_processing import WebsocketServerTransmissionProcessing as Server
 from logging import DEBUG, INFO, ERROR
 import asyncio
 
@@ -10,7 +10,7 @@ LOGGER_LEVEL = DEBUG if __debug__ else ERROR
 def main():
     ''' メイン関数 '''
     ws_server = Server(LOGGER_LEVEL)
-    ws_server.initialize(LOGGER_LEVEL)
+    ws_server.initialize()
     
     try:
         asyncio.run(ws_server.run())
