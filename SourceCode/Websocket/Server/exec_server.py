@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import asyncio
+
 from websocket_server_transmission_processing import WebsocketServerTransmissionProcessing as Server
 from logging import DEBUG, INFO, ERROR
-import asyncio
 
 LOGGER_LEVEL = DEBUG if __debug__ else ERROR
 

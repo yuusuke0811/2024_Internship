@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from websocket_server_processing import WebsocketServerProcessing
-from image_processing import ImageProcessing
-from database_operation import DatabaseOperation
-
-from Common.Constant.common import MAX_DIVISION_NUMBER
-from Common.Constant.transmission_type import CONECT, STREAMING, CAMERA_CONNECTION_INFO, CAMERA_REGISTRATION_INFO, CAMERA_REGISTERATION, CHANGE_CAMERA_SETTINGS, CAMERA_DELETE 
-from Common.Constant.client_type import CAMERA, VIEWER
-from Constant.models import SEGMENTATION
-
-from threading import Thread
-
 import base64
 import json
 import math
 import time
 import os
+import sys
+
+from threading import Thread
+
+from websocket_server_processing import WebsocketServerProcessing
+from image_processing import ImageProcessing
+from database_operation import DatabaseOperation
+
+from Constant.models import SEGMENTATION
+
+sys.path.append('../')
+from Common.Constant.common import MAX_DIVISION_NUMBER
+from Common.Constant.transmission_type import CONECT, STREAMING, CAMERA_CONNECTION_INFO, CAMERA_REGISTRATION_INFO, CAMERA_REGISTERATION, CHANGE_CAMERA_SETTINGS, CAMERA_DELETE 
+from Common.Constant.client_type import CAMERA, VIEWER
 
 class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
     ''' Websocketサーバ伝送処理クラス '''

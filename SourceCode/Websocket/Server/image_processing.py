@@ -46,7 +46,7 @@ class ImageProcessing():
         base64_datas = list(filter(lambda x : x != '', self.receive_data[timestamp]))
         # データ容量が等しい場合
         if (len(base64_datas) == json_data['totalSnedNumber']):
-            dir_path = f'./tmp/{json_data['id']}'
+            dir_path = f'./tmp/{json_data["id"]}'
 
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path)

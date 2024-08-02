@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from Common.common import delete_directory, read_file
-from Common.logger import Logger
-
-
-from Common.Constant.client_type import CAMERA, VIEWER
-from Common.Constant.transmission_type import CONECT
-
-from websocket_server import WebsocketServer
-
 import json
 import re
 import os
 import shutil
 import subprocess
+import sys
+
+from websocket_server import WebsocketServer
+
+sys.path.append('../')
+from Common.common import delete_directory, read_file
+from Common.logger import Logger
+
+from Common.Constant.client_type import CAMERA, VIEWER
+from Common.Constant.transmission_type import CONECT
 
 class WebsocketServerProcessing(Logger):
     '''Websocketサーバ処理クラス'''
@@ -46,7 +47,7 @@ class WebsocketServerProcessing(Logger):
         self.conf = read_file('serverConfig.json')
 
         # ネットワーク内に接続している機器の死活チェック
-        subprocess.run('./Common/NetworkAliveCheck.sh', stdout=subprocess.DEVNULL)
+        subprocess.run('../Common/NetworkAliveCheck.sh', stdout=subprocess.DEVNULL)
 
         # IPアドレスを取得
         sp_ip = subprocess.Popen(['ip', '-4', 'addr', 'show', 'dev', self.conf['websocket']['interface']], encoding='utf-8', stdout=subprocess.PIPE)
@@ -79,8 +80,8 @@ class WebsocketServerProcessing(Logger):
         self.clients[VIEWER] = [i for i in self.clients[VIEWER] if i['id'] != client['id']]
 
         # 切断したクライアントの画像格納フォルダを削除
-        if os.path.exists(f'./tmp/{client['id']}'):
-            shutil.rmtree(f'./tmp/{client['id']}')
+        if os.path.exists(f'./tmp/{client["id"]}'):
+            shutil.rmtree(f'./tmp/{client["id"]}')
 
         self.logger.info('クライアントとの接続が終了しました。【接続ID： {}】'.format(client['id']))
 

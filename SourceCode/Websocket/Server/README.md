@@ -48,3 +48,9 @@
     ``` pip
     > pip install ultralytics
     ```
+
+* pymongoインストール  
+
+    ``` pip
+    > pip install pymongo
+    ```
