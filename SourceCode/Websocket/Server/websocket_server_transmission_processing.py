@@ -68,15 +68,22 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
                 # Websocketサーバ情報からクライアントの接続情報を取得
                 client = next((x for x in self.server.clients if x['id'] == cameraClient['id']), None)
 
-                # 処理中の場合はスキップ
-                if cameraClient['isProcess']:
-                    continue
                 # 該当しない場合はスキップ
-                elif client == None:
+                if client == None:
                     # 未接続のクライアント情報を削除
                     self.clients[CAMERA] = [i for i in self.clients[CAMERA] if i['id'] != client['id']]
                     continue
 
+                # カメラ登録済み 
+                if cameraClient['isRegisted']:
+                    # ストリーミングOFF or 処理中の場合はスキップ
+                    if (not cameraClient['isStreaming']) or cameraClient['isProcess']:
+                        continue
+                # カメラ未登録の場合はスキップ
+                else:
+                    continue
+                
+                
                 # 伝送データを作成
                 json_data = {
                     'id': client['id'],
@@ -101,11 +108,12 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
         while True:
             for cameraClient in self.clients[CAMERA]:
                 # 画像ファイルが0枚の場合はスキップ
-                if cameraClient['image_path'] == 0:
+                if len(cameraClient['image_path']) == 0:
                     continue
 
                 # 最新の画像パスの要素番号を取得
                 index = len(cameraClient['image_path']) - 1
+                
                 file_path, count = self.image_processing.exec_image_process(cameraClient['image_path'][index], SEGMENTATION)
         
                 # キャパシティを格納
@@ -123,13 +131,14 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
                 totalSnedNumber = math.ceil(len(base64_data) / MAX_DIVISION_NUMBER)
                 json_data['totalSnedNumber'] = totalSnedNumber
 
+                print(self.clients[VIEWER])
                 for i in range(totalSnedNumber):
                     startIndex = i * MAX_DIVISION_NUMBER
 
                     json_data['sendNumber'] = i
                     json_data['endPoint'] = totalSnedNumber - 1 == i
                     json_data['data'] = base64_data[startIndex : startIndex + MAX_DIVISION_NUMBER] if i < totalSnedNumber else base64_data[startIndex : ]
-
+                    
                     for viewerClient in self.clients[VIEWER]:
                         client = next((x for x in self.server.clients if x['id'] == viewerClient['id']), None)
                     
@@ -190,18 +199,33 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
         ''' 接続処理関数 '''
 
         clientType = json_data['clientType']
-
+        
         # クライアントが「カメラ」の場合
         if clientType == CAMERA:
-            self.clients[clientType].append({
+            clientInfo = {
                 'id': client['id'],
+                'objectId': None,
                 'address': client['address'][0],
                 'hostname': json_data['hostname'],
+                'name': '', 
                 'count':0,
                 'capacity': json_data['capacity'],
+                'isRegisted': True,
                 'isProcess': False,
+                'isStreaming': True,
                 'image_path': [],
-            })
+            }
+
+            # カメラ登録情報を取得
+            registedCameraInfo = self.database_operation.find_one_data('registedCameraInfo', { 'hostname': json_data['hostname'] })
+            if registedCameraInfo is not None:
+                clientInfo['isRegisted'] = True
+
+                clientInfo['objectId'] = registedCameraInfo['objectId']
+                clientInfo['name'] = registedCameraInfo['name']
+                clientInfo['isStreaming'] = registedCameraInfo['isStreaming']
+
+            self.clients[clientType].append(clientInfo)
         # クライアントが「ビューアー」の場合
         elif clientType == VIEWER:
             self.clients[clientType].append({
@@ -249,7 +273,6 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
     # カメラ登録関数
     def regist_camera(self, client, json_data):
         ''' カメラ登録関数 '''
-        #viewerClient = next((x for x in self.clients[VIEWER] if x['id'] == client['id']), None)
         self.send_data_to_client(client, json_data)
 
     # カメラ設定変更関数
