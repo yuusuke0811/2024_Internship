@@ -48,3 +48,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+SourceCode/Websocket/Server/yolov8n-seg.pt
+SourceCode/Websocket/Server/log/
+SourceCode/Websocket/Server/runs/
+SourceCode/Websocket/Server/tmp/
