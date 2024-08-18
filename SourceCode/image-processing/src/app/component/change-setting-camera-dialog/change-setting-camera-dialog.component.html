@@ -1,0 +1,17 @@
+<mat-h1 mat-dialog-title>設定変更</mat-h1>
+<mat-dialog-content>
+    <!-- 入力フォーム -->
+    <mat-form-field >
+        <mat-label>カメラ名称</mat-label>
+        <input matInput type="text" [(ngModel)]="name">
+    </mat-form-field>
+    <div>
+        <mat-slide-toggle class="maskingSlideToggleStyle" [(ngModel)]="isMasking">マスキング</mat-slide-toggle>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="bottonContent">
+        <button mat-raised-button color="primary" mat-dialog-close (click)="onConfirm()" >変更</button>
+        <button mat-stroked-button color="accent" mat-dialog-close (click)="onClose()">キャンセル</button>
+    </div>
+</mat-dialog-actions>

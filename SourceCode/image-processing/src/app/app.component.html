@@ -1,48 +1,49 @@
-<div class="bg_pattern Wavy"></div>
-<div class="section">
+<mat-toolbar>
+  <span>人検知システム</span>
+  <button class="registCameraButton" mat-button color="accent" (click)="openRegistCameraDialog()">カメラ登録</button> 
+</mat-toolbar>
 <main class="main">
-  <div class="content">
-    <div hidden>
-      <canvas id="canvas"></canvas>
-    </div>
-    <div class="title"><h1>人検知システム</h1></div>
-    <div>
-      <table class="table" cdk-table [dataSource]="cameraList">
-
-        <!-- Position Column -->
-        <ng-container cdkColumnDef="position">
-          <th cdk-header-cell *cdkHeaderCellDef>No.</th>
-          <td cdk-cell *cdkCellDef="let element"> {{element.id}} </td>
-        </ng-container>
+  <!-- 取得画像描画（非表示） -->
+  <div hidden><canvas id="canvas"></canvas></div>
+  <!-- コンテンツ -->
+  <div class="content" >
+    <div class="mat-elevation-z8">
+    <!--　一覧　-->
+    <table mat-table [dataSource]="cameraList ">
+      <!-- Position Column -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
       
-        <!-- Name Column -->
-        <ng-container cdkColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef>部屋</th>
-          <td cdk-cell *cdkCellDef="let element"> 
-            
-            <button mat-flat-button color="accent" type="button" (click)="openDialog(element.id, element.name)">
-              {{ element.name }}
-            </button> 
-          </td>
-        </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>カメラ名称</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
 
-        <!-- Weight Column -->
-        <ng-container cdkColumnDef="weight">
-          <th cdk-header-cell *cdkHeaderCellDef>混雑度</th>
-          <td cdk-cell *cdkCellDef="let element">
-            <mat-icon class="icon" *ngIf="element.weight >= 0.7">sentiment_very_dissatisfied</mat-icon>
-            <mat-icon class="icon" *ngIf="0.5 <= element.weight && element.weight < 0.7">mood_bad</mat-icon>
-            <mat-icon class="icon" *ngIf="0.3 <= element.weight && element.weight < 0.5">sentiment_satisfied</mat-icon>
-            <mat-icon class="icon" *ngIf="element.weight < 0.3">sentiment_very_satisfied</mat-icon>
-            
-          </td>
-        </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="weight">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttons">
+            <button mat-flat-button color="accent" (click)="openImageViewDialog(element.id, element.name, element.isMasking)">
+              画像表示
+            </button>
+            <button mat-flat-button color="primary" (click)="openSettingCameraDialog(element.id, element.name, element.isMasking)">
+              設定変更
+            </button>
+            <button mat-flat-button color="warn" (click)="openUnsubscribeCameraDialog(element.id)">
+              登録解除
+            </button>
+          </div>
+        </td>
+      </ng-container>
       
-        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
-
 </main>
-</div>

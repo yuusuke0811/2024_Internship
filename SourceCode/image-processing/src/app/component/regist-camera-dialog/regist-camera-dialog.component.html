@@ -1,0 +1,37 @@
+<mat-h1 mat-dialog-title>カメラ登録</mat-h1>
+<mat-dialog-content>
+    <!-- 未登録カメラ一覧 -->
+    <mat-label>未登録カメラ一覧</mat-label>
+    <div class="mat-elevation-z8 tableStyle">
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="hostname">
+                <th mat-header-cell *matHeaderCellDef>ホスト名</th>
+                <td mat-cell *matCellDef="let element">{{element.hostname}}</td>
+            </ng-container>
+            <ng-container matColumnDef="ipAddress">
+                <th mat-header-cell *matHeaderCellDef>IPアドレス</th>
+                <td mat-cell *matCellDef="let element">{{element.ipAddress}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr 
+                mat-row
+                (click)="onClickRow(row)" 
+                [class.row-is-clicked]="clickRowData == row"
+                *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+        </table>
+        <mat-paginator #paginator [pageSizeOptions]="[3, 6, 9]" showFirstLastButtons>
+        </mat-paginator>
+    </div>
+    <!-- 入力フォーム -->
+    <mat-form-field >
+        <mat-label>カメラ名称</mat-label>
+        <input matInput>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="bottonContent">
+        <button mat-raised-button color="primary" mat-dialog-close (click)="onRegist()" >登録</button>
+        <button mat-stroked-button color="accent" mat-dialog-close (click)="onClose()">キャンセル</button>
+    </div>
+</mat-dialog-actions>

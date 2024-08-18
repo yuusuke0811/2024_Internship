@@ -65,9 +65,10 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
 
         while True:
             for cameraClient in self.clients[CAMERA]:
+
                 # Websocketサーバ情報からクライアントの接続情報を取得
                 client = next((x for x in self.server.clients if x['id'] == cameraClient['id']), None)
-
+                
                 # 該当しない場合はスキップ
                 if client == None:
                     # 未接続のクライアント情報を削除
@@ -82,16 +83,17 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
                 # カメラ未登録の場合はスキップ
                 else:
                     continue
-                
-                
+                    
+                    
                 # 伝送データを作成
                 json_data = {
                     'id': client['id'],
-                    'transmissionType': STREAMING
-                }
+                        'transmissionType': STREAMING
+                    }
 
                 # クライアントへメッセージ送信
                 self.send_data_to_client(client, json_data)
+                    
                 # 処理中フラグを「処理中」に変更
                 cameraClient['isProcess'] = True
 
@@ -114,39 +116,41 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
                 # 最新の画像パスの要素番号を取得
                 index = len(cameraClient['image_path']) - 1
                 
-                file_path, count = self.image_processing.exec_image_process(cameraClient['image_path'][index], SEGMENTATION)
+                try:
+                    file_path, count = self.image_processing.exec_image_process(cameraClient['image_path'][index], SEGMENTATION)
         
-                # キャパシティを格納
-                cameraClient['count'] = count
+                    # キャパシティを格納
+                    cameraClient['count'] = count
 
-                with open(file_path, 'rb') as f:
-                    base64_data = base64.b64encode(f.read()).decode()
+                    with open(file_path, 'rb') as f:
+                        base64_data = base64.b64encode(f.read()).decode()
 
-                json_data = {
-                    'id': cameraClient['id'],
-                    'capacity': cameraClient['capacity'],
-                    'transmissionType': STREAMING
-                }
+                    json_data = {
+                        'id': cameraClient['id'],
+                        'capacity': cameraClient['capacity'],
+                        'transmissionType': STREAMING
+                    }
 
-                totalSnedNumber = math.ceil(len(base64_data) / MAX_DIVISION_NUMBER)
-                json_data['totalSnedNumber'] = totalSnedNumber
+                    totalSnedNumber = math.ceil(len(base64_data) / MAX_DIVISION_NUMBER)
+                    json_data['totalSnedNumber'] = totalSnedNumber
 
-                print(self.clients[VIEWER])
-                for i in range(totalSnedNumber):
-                    startIndex = i * MAX_DIVISION_NUMBER
+                    for i in range(totalSnedNumber):
+                        startIndex = i * MAX_DIVISION_NUMBER
 
-                    json_data['sendNumber'] = i
-                    json_data['endPoint'] = totalSnedNumber - 1 == i
-                    json_data['data'] = base64_data[startIndex : startIndex + MAX_DIVISION_NUMBER] if i < totalSnedNumber else base64_data[startIndex : ]
-                    
-                    for viewerClient in self.clients[VIEWER]:
-                        client = next((x for x in self.server.clients if x['id'] == viewerClient['id']), None)
-                    
-                        if client == None:
-                            self.clients[VIEWER] = [i for i in self.clients[VIEWER] if i['id'] != client['id']]
-                            continue
+                        json_data['sendNumber'] = i
+                        json_data['endPoint'] = totalSnedNumber - 1 == i
+                        json_data['data'] = base64_data[startIndex : startIndex + MAX_DIVISION_NUMBER] if i < totalSnedNumber else base64_data[startIndex : ]
+                        
+                        for viewerClient in self.clients[VIEWER]:
+                            client = next((x for x in self.server.clients if x['id'] == viewerClient['id']), None)
+                        
+                            if client == None:
+                                self.clients[VIEWER] = [i for i in self.clients[VIEWER] if i['id'] != client['id']]
+                                continue
 
-                        self.send_data_to_client(client, json_data)
+                            self.send_data_to_client(client, json_data)
+                except:
+                    continue
             
             time.sleep(1)
 

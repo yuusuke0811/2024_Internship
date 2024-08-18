@@ -1,0 +1,38 @@
+mat-h1 {
+    text-align: center;
+}
+
+button {
+    width: 8em;
+}
+
+.bottonContent {
+    position: absolute;
+    right: 1.75em
+}
+
+.tableStyle {
+    margin-bottom: 1em;
+}
+
+.tableStyle th {
+    text-align: center;
+}
+
+.mat-column-hostname {
+    width: 60%;
+    border-right: 1px solid #616161;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+    cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+    background-color: gray;
+}
+
+.row-is-clicked {
+    background-color: #6e6e6e;
+    color: #7b1fa2;
+}
