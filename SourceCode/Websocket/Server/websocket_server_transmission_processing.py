@@ -263,15 +263,32 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
     # カメラ接続情報関数
     def get_camera_connection_info(self, client, json_data):
         ''' カメラ接続情報関数 '''
+        json_data['cameraInfo'] = []
 
-        json_data['data'] = self.clients[CAMERA]
+        for cameraclient in self.clients[CAMERA]:
+            json_data['cameraInfo'].append({
+                'address': cameraclient['address'], # クライアントのIPアドレス
+                'hostname': cameraclient['hostname'], # クライアントのホスト名
+                'capacity': cameraclient['capacity'] # 最大検知数
+            })
+
+        
         self.send_data_to_client(client, json_data)
 
     # カメラ登録情報関数
     def get_camera_registration_info(self, client, json_data):
         ''' カメラ登録情報関数 '''
+        json_data['cameraInfo'] = []
+        registedCameraInfo = self.database_operation.find_data('registedCameraInfo')
 
-        json_data['data'] = self.clients[CAMERA]
+        for registedCamera in registedCameraInfo:
+            json_data['cameraInfo'].append({
+                'cameraId': registedCamera.get('cameraId'), # カメラID
+                'cameraName': registedCamera.get('cameraName'), # カメラ名
+                'cameraIp': registedCamera.get('cameraIp'), # IPアドレス
+                'maskingFlag': registedCamera.get('maskingFlag') # マスキングフラグ
+            })
+
         self.send_data_to_client(client, json_data)
 
     # カメラ登録関数
