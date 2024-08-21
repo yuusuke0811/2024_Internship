@@ -277,16 +277,72 @@ class WebsocketServerTransmissionProcessing(WebsocketServerProcessing):
     # カメラ登録関数
     def regist_camera(self, client, json_data):
         ''' カメラ登録関数 '''
+        result=False        # マスキングフラグの初期化
+        try:
+            # 登録されたカメラを取得
+            registedCameraInfo = self.database_operation.find_data('registedCameraInfo')
+            # カメラのIDのリストを取得
+            id_list = [x.get('cameraId') for x in registedCameraInfo]
+            # カメラのIDの最大値
+            id_max = max(id_list)
+
+            # 登録内容
+            data = {
+                'cameraId' : id_max+1,
+                'cameraIp' : json_data['cameraIp'],
+                'cameraName' : json_data['cameraName'],
+                'maskingFlag': json_data['maskingFlag']
+            }
+
+            # データベース更新
+            self.database_operation.insert_data('registedCameraInfo',
+                                                data=data)
+            result=True     # 成功
+        except:
+            result=False    # 失敗
+        print(result)
+
+        json_data["result"] = result
+
         self.send_data_to_client(client, json_data)
+        
 
     # カメラ設定変更関数
     def change_setting_camera(self, client, json_data):
         ''' カメラ設定変更関数 '''
+        result=False        # マスキングフラグの初期化
+        try:
+            # 変更内容
+            data = {
+                'cameraId' : json_data['cameraId'],
+                'cameraName' : json_data['cameraName'],
+                'maskingFlag': json_data['maskingFlag']
+            }
+
+            # データベース更新
+            self.database_operation.update_data('registedCameraInfo',
+                                                conditions={"cameraId":json_data['cameraId']},
+                                                data=data)
+            result=True     # 成功
+        except:
+            result=False    # 失敗
+        print(result)
+
+        json_data["result"] = result
 
         self.send_data_to_client(client, json_data)
 
     # カメラ削除関数
     def delete_camera(self, client, json_data):
         ''' カメラ削除関数 '''
+        # データベース更新
+        try:
+            # データベースから該当IDのカメラデータを削除
+            self.database_operation.delete_data('registedCameraInfo',
+                                                conditions={"cameraId":json_data['cameraId']})
+            result=True     # 成功
+        except:
+            result=False    # 失敗
+        print(result)
 
         self.send_data_to_client(client, json_data)
